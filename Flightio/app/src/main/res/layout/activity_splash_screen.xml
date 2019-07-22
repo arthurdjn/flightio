@@ -14,10 +14,9 @@
         android:layout_marginBottom="12dp"
 
 
-        android:src="@drawable/flightio_logo"
+        android:src="@drawable/drone"
         app:layout_constraintBottom_toTopOf="@+id/textLogo"
 
-        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"></ImageView>
 

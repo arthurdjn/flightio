@@ -104,7 +104,10 @@ public class Frag1Param extends Fragment {
                             groundImageBox.setText(grdImgText);
 
 
-                            paramBase.setBase(base[0]);
+                            // Get informations for the other fragment
+                            paramBase.setBase(base);
+                            paramBase.setAlti(alti);
+                            paramBase.setCanExport(true);
 
                         }
                     }

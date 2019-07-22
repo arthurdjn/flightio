@@ -86,9 +86,9 @@ public class Interpolation {
     }
 
     public static ArrayList<Point> computeInterSquare4(Point point1, Point point2, Point point3, Point point4, double sizeGroundBase){
-        ArrayList<Point> list12 = computeInterLatLon(point1, point2, sizeGroundBase);
+        //ArrayList<Point> list12 = computeInterLatLon(point1, point2, sizeGroundBase);
         ArrayList<Point> list23 = computeInterLatLon(point2, point3, sizeGroundBase);
-        ArrayList<Point> list34 = computeInterLatLon(point3, point4, sizeGroundBase);
+        //ArrayList<Point> list34 = computeInterLatLon(point3, point4, sizeGroundBase);
         ArrayList<Point> list41 = computeInterLatLon(point4, point1, sizeGroundBase);
         ArrayList<Point> listInter = new ArrayList<>();
 
@@ -111,8 +111,34 @@ public class Interpolation {
                 }
                 //adding the point interpolated between the axes 23 - 41
             }
-
         }
         return listInter;
     }
+
+
+    /**
+     * Create a drone map without stop point. Only intersections.
+     * @param point1
+     * @param point2
+     * @param point3
+     * @param point4
+     * @param sizeGroundBase
+     * @return
+     */
+    public static ArrayList<Point> computeInterSquareNoStop(Point point1, Point point2, Point point3, Point point4, double sizeGroundBase){
+        ArrayList<Point> list23 = computeInterLatLon(point2, point3, sizeGroundBase);
+        ArrayList<Point> list41 = computeInterLatLon(point4, point1, sizeGroundBase);
+        ArrayList<Point> listInter = new ArrayList<>();
+
+        for (int i = 0; i < (int) list23.size()/2; i++) {
+            listInter.add(list23.get(2*i));
+            listInter.add(list41.get(list41.size() -2*i - 1));
+            listInter.add(list41.get(list41.size() -2*i - 2));
+            listInter.add(list23.get(2*i + 1));
+        }
+        return listInter;
+    }
+
+
+
 }

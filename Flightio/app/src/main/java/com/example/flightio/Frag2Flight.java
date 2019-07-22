@@ -2,13 +2,18 @@ package com.example.flightio;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.flightio.engine.camera.Camera;
@@ -24,6 +29,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -37,6 +43,7 @@ public class Frag2Flight extends Fragment {
     private GoogleMap googleMap;
     private ArrayList<Point> listMarkers = new ArrayList<>();
     private Param paramBase;
+    private boolean noPhotoBool = false;
 
     public Frag2Flight(Param base){
         paramBase = base;
@@ -66,6 +73,7 @@ public class Frag2Flight extends Fragment {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
+                mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
                 // For showing a move to my location button
                 //googleMap.setMyLocationEnabled(true);
@@ -89,6 +97,8 @@ public class Frag2Flight extends Fragment {
 
                         // Adding the marker to the list
                         Point markedPoint = new Point(point.latitude, point.longitude);
+                        double alti = paramBase.getAlti();
+                        markedPoint.setZ(alti);
                         listMarkers.add(markedPoint);
                     }
                 });
@@ -98,7 +108,7 @@ public class Frag2Flight extends Fragment {
          // SAVE BUTTON
 
 
-                //Button compute
+                // Button save
                 final View save = rootView.findViewById(R.id.save);
 
                 save.setOnClickListener(
@@ -106,41 +116,48 @@ public class Frag2Flight extends Fragment {
                             @Override
                             public void onClick(View v) {
                                 /* DO SOMETHING UPON THE CLICK */
+                                    if (paramBase.getCanExport() && (listMarkers.size() == 4)){
+                                        double sizeGroundBase = paramBase.getBase()[1];
+                                        ArrayList<Point> listInter = new ArrayList<>();
 
+                                        if (noPhotoBool) {
+                                            listInter = Interpolation.computeInterSquareNoStop(listMarkers.get(0), listMarkers.get(1),
+                                                    listMarkers.get(2), listMarkers.get(3), sizeGroundBase);
+                                        }
+                                        else {
+                                            listInter = Interpolation.computeInterSquare4(listMarkers.get(0), listMarkers.get(1),
+                                                    listMarkers.get(2), listMarkers.get(3), sizeGroundBase);
+                                        }
+                                        
+                                        final String text = Litchi.listPointsToString(listInter);
+                                        FileOutputStream fos = null;
 
-                                double sizeGroundBase = 6;
-                                ArrayList<Point> listInter = Interpolation.computeInterSquare4(listMarkers.get(0), listMarkers.get(1),
-                                        listMarkers.get(2), listMarkers.get(3), sizeGroundBase);
-
-                                final String text = "" + paramBase.getBase();     //Litchi.listPointsToString(listInter);
-
-                                FileOutputStream fos = null;
-
-                                try {
-                                    fos = lf.getContext().openFileOutput("test.txt", lf.getContext().MODE_PRIVATE);
-                                    fos.write(text.getBytes());
-
-                                    // Message succesful write
-                            /*
-                            Toast.makeText(this, "Saved to " + lf.getContext().getFilesDir() + "/" + FILE_NAME,
-                                    Toast.LENGTH_LONG).show();
-                            */
-
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } finally {
-                                    if (fos != null){
                                         try {
-                                            fos.close();
+                                            fos = lf.getContext().openFileOutput("litchi_mission.csv", lf.getContext().MODE_PRIVATE);
+                                            fos.write((Litchi.litchiHeader() + "\n").getBytes());
+
+                                            for (int i = 0; i < listInter.size(); i++) {
+                                                Litchi pointLitchi = new Litchi(listInter.get(i));
+                                                fos.write((pointLitchi.toString() + "\n").getBytes());
+                                            }
+                                            // Message succesful write
+                                            //Toast.makeText(lf.getContext(), "Saved to " + lf.getContext().getFilesDir() + "/" + "litchi_mission.csv",
+                                            //        Toast.LENGTH_LONG).show();
+
+                                        } catch (FileNotFoundException e) {
+                                            e.printStackTrace();
                                         } catch (IOException e) {
                                             e.printStackTrace();
+                                        } finally {
+                                            if (fos != null){
+                                                try {
+                                                    fos.close();
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
                                         }
                                     }
-                                }
-
-
                             }
                         }
                 );
@@ -148,9 +165,61 @@ public class Frag2Flight extends Fragment {
 
 
 
+                // Delete Markers
+                final View delete = rootView.findViewById(R.id.delete_markers);
+
+                delete.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                googleMap.clear();
+                            }
+                        }
+                );
+
+                // No photos
+                final View photo = rootView.findViewById(R.id.photo_mode);
+                photo.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        if (noPhotoBool) {
+                            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.photo_mode);
+                            fab.setImageResource(R.drawable.photos);
+                        }
+                        else {
+                            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.photo_mode);
+                            fab.setImageResource(R.drawable.no_photos);
+                        }
+                        noPhotoBool = !noPhotoBool;     // reverse the boolean
+
+                    }
+                });
+
+
+                // Go to litchi
+                final View link = rootView.findViewById(R.id.export);
+
+                link.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String url = "https://flylitchi.com/hub";
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(url));
+                                startActivity(i);
+                            }
+                        }
+                );
+
+
+
 
             }
         });
+
+
+
+
+
 
         return rootView;
     }

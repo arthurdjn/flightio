@@ -36,8 +36,13 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position){
             case 0:
                 fragment = new Frag1Param(param);
-                double base = param.getBase();
+                double[] base = param.getBase();
+                double alti = param.getAlti();
+                boolean canExport = param.getCanExport();
                 param.setBase(base);
+                param.setAlti(alti);
+                param.setCanExport(canExport);
+
                 break;
             case 1:
                 fragment = new Frag2Flight(param);
