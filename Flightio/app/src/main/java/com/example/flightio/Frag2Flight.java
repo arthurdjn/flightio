@@ -1,14 +1,18 @@
 package com.example.flightio;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.flightio.engine.camera.Camera;
+import com.example.flightio.engine.camera.Param;
 import com.example.flightio.engine.coordinates.Point;
 import com.example.flightio.engine.interpolation.Interpolation;
 import com.example.flightio.engine.save.Litchi;
@@ -28,12 +32,19 @@ import java.util.ArrayList;
 
 public class Frag2Flight extends Fragment {
 
+
     MapView mMapView;
     private GoogleMap googleMap;
     private ArrayList<Point> listMarkers = new ArrayList<>();
+    private Param paramBase;
+
+    public Frag2Flight(Param base){
+        paramBase = base;
+    }
+
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
         final LayoutInflater lf = getActivity().getLayoutInflater();
         final View rootView = inflater.inflate(R.layout.frag2_flight_layout, container, false);
@@ -60,7 +71,7 @@ public class Frag2Flight extends Fragment {
                 //googleMap.setMyLocationEnabled(true);
 
                 // For dropping a marker at a point on the Map
-                LatLng sydney = new LatLng(-34, 151);
+                LatLng sydney = new LatLng(43.979380, 5.772274);
                 //googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
 
                 // For zooming automatically to the location of the marker
@@ -96,25 +107,18 @@ public class Frag2Flight extends Fragment {
                             public void onClick(View v) {
                                 /* DO SOMETHING UPON THE CLICK */
 
-                                EditText editText = rootView.findViewById(R.id.editText);
-
-
 
                                 double sizeGroundBase = 6;
                                 ArrayList<Point> listInter = Interpolation.computeInterSquare4(listMarkers.get(0), listMarkers.get(1),
                                         listMarkers.get(2), listMarkers.get(3), sizeGroundBase);
 
-                                final String text = Litchi.listPointsToString(listInter);
-
+                                final String text = "" + paramBase.getBase();     //Litchi.listPointsToString(listInter);
 
                                 FileOutputStream fos = null;
 
                                 try {
                                     fos = lf.getContext().openFileOutput("test.txt", lf.getContext().MODE_PRIVATE);
                                     fos.write(text.getBytes());
-
-                                    // clear the editText
-                                    editText.getText().clear();
 
                                     // Message succesful write
                             /*
@@ -174,4 +178,5 @@ public class Frag2Flight extends Fragment {
         super.onLowMemory();
         mMapView.onLowMemory();
     }
+
 }

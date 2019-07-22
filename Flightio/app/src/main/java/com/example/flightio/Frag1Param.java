@@ -1,30 +1,30 @@
 package com.example.flightio;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.transition.ChangeTransform;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.flightio.engine.camera.Camera;
-import com.example.flightio.engine.coordinates.Point;
-import com.example.flightio.engine.interpolation.Interpolation;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
+import com.example.flightio.Frag2Flight;
+import com.example.flightio.engine.camera.Param;
 
 public class Frag1Param extends Fragment {
 
-    private Button compute;
+    private Param paramBase;
+
+    public Frag1Param(Param base){
+        paramBase = base;
+    }
+
 
     // Fragment section
     @Nullable
@@ -49,7 +49,7 @@ public class Frag1Param extends Fragment {
         final Spinner spinnerDevice = (Spinner) view.findViewById(R.id.spinnerDevice);
         final Spinner spinnerPlan = (Spinner) view.findViewById(R.id.spinnerPlan);
         final EditText textAlti = view.findViewById(R.id.altitude);
-        final EditText textCover = view.findViewById(R.id.altitude);
+        final EditText textCover = view.findViewById(R.id.covering);
 
 
 
@@ -89,27 +89,33 @@ public class Frag1Param extends Fragment {
                                     "Image size :\n" + imgSize[0] + " x " + imgSize[1];
                             captorBox.setText(captorText);
 
-                            String focalText = "Focal length :\n" + Math.floor(focal*10000)/10000 + "\n\n" +
-                                    "Equivalent focal :\n" + Math.floor(focaleq*100)/100;
+                            String focalText = "Focal length :\n" + Math.floor(focal*10000)/10000 + "mm\n\n" +
+                                    "Equivalent focal :\n" + Math.floor(focaleq*100)/100 + "mm";
                             focalBox.setText(focalText);
 
                             String pixSizeText = "Pixel size :\n" + Math.floor(sizePix*1000000)/1000000;
                             pixSizeBox.setText(pixSizeText);
 
-                            String grdPixSizeText = "Ground pixel size :\n" + Math.floor(sizePixGround*100)/100;
+                            String grdPixSizeText = "Ground pixel size :\n" + Math.floor(sizePixGround*10000)/100 + "cm";
                             grdPixSizeBox.setText(grdPixSizeText);
 
                             String grdImgText = "Ground Image size :\n" + Math.floor(sizeImgGround[0]*10000)/10000 + " x " + Math.floor(sizeImgGround[1]*10000)/10000 + "\n\n" +
-                                    "Base :\n" + Math.floor(base[0]*10000)/10000 + " x " + Math.floor(base[1]*10000)/10000;
+                                    "Base :\n" + Math.floor(base[0]*100)/100 + "m x " + Math.floor(base[1]*100)/100 + "m";
                             groundImageBox.setText(grdImgText);
+
+
+                            paramBase.setBase(base[0]);
 
                         }
                     }
                 }
         );
 
+
         return view;
 
     }
+
+
 
 }

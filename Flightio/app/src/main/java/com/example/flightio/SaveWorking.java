@@ -54,6 +54,7 @@ public class SaveWorking extends  Fragment {
                     public void onClick(View v) {
                         /* DO SOMETHING UPON THE CLICK */
 
+                        /*
                         EditText editText = view.findViewById(R.id.editText);
                         final String text = editText.getText().toString();
                         FileOutputStream fos = null;
@@ -66,10 +67,10 @@ public class SaveWorking extends  Fragment {
                             editText.getText().clear();
 
                             // Message succesful write
-                            /*
+
                             Toast.makeText(this, "Saved to " + lf.getContext().getFilesDir() + "/" + FILE_NAME,
                                     Toast.LENGTH_LONG).show();
-                            */
+
 
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -85,10 +86,11 @@ public class SaveWorking extends  Fragment {
                             }
                         }
 
-
+                        */
                     }
                 }
         );
+
 
         return view;
 

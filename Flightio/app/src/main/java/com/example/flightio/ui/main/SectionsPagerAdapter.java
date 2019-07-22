@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.example.flightio.Frag1Param;
 import com.example.flightio.Frag2Flight;
 import com.example.flightio.R;
+import com.example.flightio.engine.camera.Param;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -27,15 +28,19 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         mContext = context;
     }
 
+    Param param = new Param();
+
     @Override
     public Fragment getItem(int position) {
         Fragment fragment = null;
         switch (position){
             case 0:
-                fragment = new Frag1Param();
+                fragment = new Frag1Param(param);
+                double base = param.getBase();
+                param.setBase(base);
                 break;
             case 1:
-                fragment = new Frag2Flight();
+                fragment = new Frag2Flight(param);
                 break;
         }
         return fragment;
