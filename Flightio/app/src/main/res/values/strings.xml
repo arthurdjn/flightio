@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Flightio</string>
+    <string name="welcome_msg">Flightio</string>
+
+    <string name="tab_text_1">Settings</string>
+    <string name="tab_text_2">Map</string>
+
+    <string-array name="cameras_arrays">
+        <item>Select your device</item>
+        <item>Parrot Sequoia</item>
+        <item>DJI Mavic 2 Pro</item>
+        <item>Canon EOS 600D</item>
+    </string-array>
+
+    <string-array name="plan_arrays">
+        <item>Type of plan</item>
+        <item>Square</item>
+        <item>Round</item>
+    </string-array>
+
+    <string name="captor">Captor size :\n\n\nImage size</string>
+    <string name="ground_image">Ground image size :\n\n\nBase :</string>
+    <string name="pix_size">Pixel size :</string>
+    <string name="ground_pixel_size">Ground pixel size :</string>
+    <string name="focal">Focal length :\n\n\nEquivalent focal :</string>
+    <string name="title_activity_maps">Map</string>
+
+</resources>
