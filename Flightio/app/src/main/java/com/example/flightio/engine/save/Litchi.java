@@ -3,6 +3,8 @@ package com.example.flightio.engine.save;
 
 import com.example.flightio.engine.coordinates.Point;
 
+import java.util.ArrayList;
+
 public class Litchi {
 
     double lat;
@@ -522,5 +524,19 @@ public class Litchi {
                 + poi_altitude + "; " + poi_altitudemode + "; " + photo_timeinterval;
 
     }
+
+
+    public static String listPointsToString(ArrayList<Point> thingsToWrite){
+        String file = litchiHeader() + "\n";
+        for (int i = 0; i < thingsToWrite.size(); i++) {
+            Litchi pointLitchi = new Litchi(thingsToWrite.get(i));
+            file += pointLitchi.toString() + "\n";
+        }
+
+        return file;
+    }
+
+
+
 
 }

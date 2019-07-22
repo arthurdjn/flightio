@@ -5,10 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.flightio.engine.coordinates.Point;
+import com.example.flightio.engine.interpolation.Interpolation;
+import com.example.flightio.engine.save.Litchi;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -18,18 +21,25 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Frag2Flight extends Fragment {
 
     MapView mMapView;
     private GoogleMap googleMap;
-    private ArrayList<Point> listMarkers;
+    private ArrayList<Point> listMarkers = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.frag2_flight_layout, container, false);
 
+        final LayoutInflater lf = getActivity().getLayoutInflater();
+        final View rootView = inflater.inflate(R.layout.frag2_flight_layout, container, false);
+
+
+        // GOOGLE MAP
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
@@ -51,20 +61,14 @@ public class Frag2Flight extends Fragment {
 
                 // For dropping a marker at a point on the Map
                 LatLng sydney = new LatLng(-34, 151);
-                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
+                //googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
 
                 // For zooming automatically to the location of the marker
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 googleMap.clear();
 
-
-
-
-
-
                 // Adding a marker on click
-
                 googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng point) {
@@ -80,8 +84,62 @@ public class Frag2Flight extends Fragment {
 
 
 
+         // SAVE BUTTON
 
 
+                //Button compute
+                final View save = rootView.findViewById(R.id.save);
+
+                save.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                /* DO SOMETHING UPON THE CLICK */
+
+                                EditText editText = rootView.findViewById(R.id.editText);
+
+
+
+                                double sizeGroundBase = 6;
+                                ArrayList<Point> listInter = Interpolation.computeInterSquare4(listMarkers.get(0), listMarkers.get(1),
+                                        listMarkers.get(2), listMarkers.get(3), sizeGroundBase);
+
+                                final String text = Litchi.listPointsToString(listInter);
+
+
+                                FileOutputStream fos = null;
+
+                                try {
+                                    fos = lf.getContext().openFileOutput("test.txt", lf.getContext().MODE_PRIVATE);
+                                    fos.write(text.getBytes());
+
+                                    // clear the editText
+                                    editText.getText().clear();
+
+                                    // Message succesful write
+                            /*
+                            Toast.makeText(this, "Saved to " + lf.getContext().getFilesDir() + "/" + FILE_NAME,
+                                    Toast.LENGTH_LONG).show();
+                            */
+
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    if (fos != null){
+                                        try {
+                                            fos.close();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+
+
+                            }
+                        }
+                );
 
 
 
