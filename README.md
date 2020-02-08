@@ -27,7 +27,7 @@ When you are satisfied with your set up, export your map to *flylitchi* by press
 
 <p align="center">
   <b>Tutorial</b><br>
-  <img src="demo.gif">
+  <img src="img/demo.gif">
   <br>
 </p>
 
