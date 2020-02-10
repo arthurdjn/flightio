@@ -7,7 +7,7 @@
 
 ### Overview
 
-**Flightio** is an android application made in Java for drone flight planning. This application is connected to your *flylitchi* account, and create a ready to go plan for your drone. The plan created make sure that you won't miss any photo for your mapping, especially if you want to create 3D models. Then, you will need at least 60% of coverage between each pictures. **Flightio** takes into account the camera specs of your drone camera, altitude, speed and upload the plan on your account !
+**Flightio** is an android application made in Java for drone flight planning. This application is connected to your *flylitchi* account, and create a ready to go plan for your drone. The plan created make sure that you won't miss any photo for your mapping, especially if you want to create 3D models. Then, you will need at least 60% of coverage between each pictures. **Flightio** takes into account the camera specs of your drone, its altitude, speed and upload the plan on your account ! You can, of course, download the plan into your drone before the flight, so you won't be dependent on the internet connection.
 
 <p align="center">
   <b>Flightio Interface</b><br>
